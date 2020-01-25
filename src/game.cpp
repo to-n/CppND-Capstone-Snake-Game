@@ -1,5 +1,7 @@
 #include "game.h"
 #include <iostream>
+#include <thread>
+#include <chrono>
 #include "SDL.h"
 
 Game::Game(std::size_t grid_width, std::size_t grid_height)
@@ -7,11 +9,54 @@ Game::Game(std::size_t grid_width, std::size_t grid_height)
       engine(dev()),
       random_w(0, static_cast<int>(grid_width)),
       random_h(0, static_cast<int>(grid_height)) {
-  PlaceFood();
+  //  PlaceFood();
 }
 
+void Game::FoodRoute() {
+  int x, y;
+  while (true) {
+    x = random_w(engine);
+    y = random_h(engine);
+    
+      if (x > food.x) {
+	x = food.x + 1;
+      } else if (x < food.x) {
+	x = food.x - 1;
+      } else {
+	x = food.x;
+      }
+
+      if (y > food.y) {
+	y = food.y + 1;
+      } else if (y < food.y) {
+	y = food.y - 1;
+      } else {
+	y = food.y;
+      }      
+
+    // Check that the location is not occupied by a snake item before placing
+    // food.
+    if (!snake.SnakeCell(x, y)) {
+      food.x = x;
+      food.y = y;
+      return;
+    }
+  }
+}
+  
 void Game::Run(Controller const &controller, Renderer &renderer,
                std::size_t target_frame_duration) {
+
+  // TODO: protect food resource across threads
+  PlaceFood();
+  std::thread t([this]() {
+		  while (true) {
+		  std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		  FoodRoute();
+		  }
+		});
+ 
+  
   Uint32 title_timestamp = SDL_GetTicks();
   Uint32 frame_start;
   Uint32 frame_end;
