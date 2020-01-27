@@ -14,6 +14,10 @@ Game::Game(std::size_t grid_width, std::size_t grid_height)
 
 void Game::FoodRoute() {
   int x, y;
+
+  std::lock_guard<std::mutex> lockGuard(_mutex);
+
+  // Loop until unoccupied cell is found
   while (true) {
     x = random_w(engine);
     y = random_h(engine);
@@ -47,28 +51,28 @@ void Game::FoodRoute() {
 void Game::Run(Controller const &controller, Renderer &renderer,
                std::size_t target_frame_duration) {
 
-  // TODO: protect food resource across threads
   PlaceFood();
+
   std::thread t([this]() {
-		  while (true) {
-		  std::this_thread::sleep_for(std::chrono::milliseconds(100));
-		  FoodRoute();
+		  int repositionDelayMs = 200;
+		  while (_running) {
+		    std::this_thread::sleep_for(std::chrono::milliseconds(repositionDelayMs));
+		    FoodRoute();
 		  }
 		});
- 
-  
+
   Uint32 title_timestamp = SDL_GetTicks();
   Uint32 frame_start;
   Uint32 frame_end;
   Uint32 frame_duration;
   int frame_count = 0;
-  bool running = true;
+  _running = true;
 
-  while (running) {
+  while (_running) {
     frame_start = SDL_GetTicks();
 
     // Input, Update, Render - the main game loop.
-    controller.HandleInput(running, snake);
+    controller.HandleInput(_running, snake);
     Update();
     renderer.Render(snake, food);
 
@@ -93,6 +97,8 @@ void Game::Run(Controller const &controller, Renderer &renderer,
       SDL_Delay(target_frame_duration - frame_duration);
     }
   }
+
+  t.join();
 }
 
 void Game::PlaceFood() {

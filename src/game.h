@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include <random>
+#include <mutex>
 #include "SDL.h"
 #include "controller.h"
 #include "renderer.h"
@@ -23,6 +24,9 @@ class Game {
   std::mt19937 engine;
   std::uniform_int_distribution<int> random_w;
   std::uniform_int_distribution<int> random_h;
+
+  std::mutex _mutex;
+  bool _running;
 
   int score{0};
   void FoodRoute();
