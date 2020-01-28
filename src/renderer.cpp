@@ -9,6 +9,7 @@ Renderer::Renderer(const std::size_t screen_width,
       screen_height(screen_height),
       grid_width(grid_width),
       grid_height(grid_height) {
+
   // Initialize SDL
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     std::cerr << "SDL could not initialize.\n";
@@ -31,6 +32,92 @@ Renderer::Renderer(const std::size_t screen_width,
     std::cerr << "Renderer could not be created.\n";
     std::cerr << "SDL_Error: " << SDL_GetError() << "\n";
   }
+}
+
+Renderer::Renderer(Renderer& source) :
+  screen_width(source.screen_width),
+  screen_height(source.screen_height),
+  grid_width(source.grid_width),
+  grid_height(source.grid_height) {
+
+  sdl_window = SDL_CreateWindow("Snake Game", SDL_WINDOWPOS_CENTERED,
+                                SDL_WINDOWPOS_CENTERED, screen_width,
+                                screen_height, SDL_WINDOW_SHOWN);
+
+  // Create renderer
+  sdl_renderer = SDL_CreateRenderer(sdl_window, -1, SDL_RENDERER_ACCELERATED);
+  if (nullptr == sdl_renderer) {
+    std::cerr << "Renderer could not be created.\n";
+    std::cerr << "SDL_Error: " << SDL_GetError() << "\n";
+  }  
+}
+
+Renderer& Renderer::operator=(Renderer& source) {
+  screen_width = source.screen_width;
+  screen_height = source.screen_height;
+  grid_width = source.grid_width;
+  grid_height = source.grid_height;  
+
+  sdl_window = SDL_CreateWindow("Snake Game", SDL_WINDOWPOS_CENTERED,
+                                SDL_WINDOWPOS_CENTERED, screen_width,
+                                screen_height, SDL_WINDOW_SHOWN);
+
+  // Create renderer
+  sdl_renderer = SDL_CreateRenderer(sdl_window, -1, SDL_RENDERER_ACCELERATED);
+  if (nullptr == sdl_renderer) {
+    std::cerr << "Renderer could not be created.\n";
+    std::cerr << "SDL_Error: " << SDL_GetError() << "\n";
+  }
+  
+  return *this;
+}
+
+Renderer::Renderer(Renderer&& source) {
+
+  screen_width = source.screen_width;
+  source.screen_width = 0;
+
+  screen_height = source.screen_height;
+  source.screen_height = 0;
+
+  grid_width = source.grid_width;
+  source.grid_width = 0;
+
+  grid_height = source.grid_height;
+  source.grid_height = 0;    
+  
+  sdl_window = source.sdl_window;
+  source.sdl_window = nullptr;
+
+  sdl_renderer = source.sdl_renderer;
+  source.sdl_renderer = nullptr;  
+}
+
+Renderer& Renderer::operator=(Renderer&& source) {
+
+  if (this == &source) {
+    return *this;
+  }
+  
+  screen_width = source.screen_width;
+  source.screen_width = 0;
+
+  screen_height = source.screen_height;
+  source.screen_height = 0;
+
+  grid_width = source.grid_width;
+  source.grid_width = 0;
+
+  grid_height = source.grid_height;
+  source.grid_height = 0;    
+  
+  sdl_window = source.sdl_window;
+  source.sdl_window = nullptr;
+
+  sdl_renderer = source.sdl_renderer;
+  source.sdl_renderer = nullptr;
+
+  return *this;
 }
 
 Renderer::~Renderer() {
