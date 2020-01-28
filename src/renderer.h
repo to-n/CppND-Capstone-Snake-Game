@@ -28,8 +28,8 @@ class Renderer {
   void UpdateWindowTitle(int score, int fps);
 
  private:
-  SDL_Window *sdl_window;
-  SDL_Renderer *sdl_renderer;
+  std::shared_ptr<SDL_Window> sdl_window;
+  std::shared_ptr<SDL_Renderer> sdl_renderer;
 
   std::size_t screen_width;
   std::size_t screen_height;
