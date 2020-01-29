@@ -2,19 +2,19 @@
 
 This was forked from is the starter repo for the Capstone project in the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213). The code for this repo was inspired by [this](https://codereview.stackexchange.com/questions/212296/snake-game-in-c-with-sdl) excellent StackOverflow post and set of responses.
 
-<img src="snake_game.gif"/>
-
 ## Game Description
-A variation on the classic Snake game, the "apple" is now a coffee-drinking fly.
+In this variation on the classic Snake game, the "apple" is now a coffee-drinking fly.
 
 On game start, at the command line prompt, enter the amount of coffee the fly will drink.
+
 At the game window that appears, enjoy trying to catch a wired AF fly using the arrow keys.
+
 To exit, press Ctrl+C at the command line prompt, or simply close the game window.
 
-## Program structure
+## Program Structure
 main.cpp instantiates Renderer (draws the graphics based on game state), Controller (interprets user input to manipulate game state), and Game (stores game state), leveraging the SDL library.
 
-## Project rubric points addressed
+## Project Rubric Points Addressed
 * Loops, Functions, I/O
   * The project demonstrates an understanding of C++ functions and control structures.
     * See main() and Game::FoodRoute() for examples.
