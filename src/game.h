@@ -10,7 +10,7 @@
 
 class Game {
  public:
-  Game(std::size_t grid_width, std::size_t grid_height);
+  Game(std::size_t grid_width, std::size_t grid_height, std::size_t repositionDelay);
   void Run(Controller const &controller, Renderer &renderer,
            std::size_t target_frame_duration);
   int GetScore() const;
@@ -27,6 +27,7 @@ class Game {
 
   std::mutex _mutex;
   bool _running;
+  int _repositionDelay; // in ms
 
   int score{0};
   void FoodRoute();

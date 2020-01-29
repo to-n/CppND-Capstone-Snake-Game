@@ -4,12 +4,11 @@
 #include <chrono>
 #include "SDL.h"
 
-Game::Game(std::size_t grid_width, std::size_t grid_height)
-    : snake(grid_width, grid_height),
-      engine(dev()),
-      random_w(0, static_cast<int>(grid_width)),
-      random_h(0, static_cast<int>(grid_height)) {
-  //  PlaceFood();
+Game::Game(std::size_t grid_width, std::size_t grid_height, std::size_t repositionDelay)
+  : snake(grid_width, grid_height), _repositionDelay(repositionDelay),
+    engine(dev()),
+    random_w(0, static_cast<int>(grid_width)),
+    random_h(0, static_cast<int>(grid_height)) {
 }
 
 void Game::FoodRoute() {
@@ -54,9 +53,8 @@ void Game::Run(Controller const &controller, Renderer &renderer,
   PlaceFood();
 
   std::thread t([this]() {
-		  int repositionDelayMs = 200;
 		  while (_running) {
-		    std::this_thread::sleep_for(std::chrono::milliseconds(repositionDelayMs));
+		    std::this_thread::sleep_for(std::chrono::milliseconds(_repositionDelay));
 		    FoodRoute();
 		  }
 		});
